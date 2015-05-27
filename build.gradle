@@ -45,8 +45,13 @@ project(":tests") {
 
     dependencies {
         compile project(":shaders")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+
+        testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile "org.mockito:mockito-all:1.9.5"
     }
 }
 
