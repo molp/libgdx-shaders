@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Array;
  * @author Szymon "Veldrin" Jabłoński
  */
 public class ShaderLoader extends AsynchronousAssetLoader<ShaderProgram, ShaderParameter> {
+    private final static String TAG = "ShaderLoader";
 
     private String vertProgram;
     private String fragProgram;
@@ -47,6 +48,16 @@ public class ShaderLoader extends AsynchronousAssetLoader<ShaderProgram, ShaderP
     public ShaderProgram loadSync(AssetManager manager, String fileName, FileHandle file, ShaderParameter parameter) {
         ShaderProgram.pedantic = false;
         ShaderProgram shader = new ShaderProgram(vertProgram, fragProgram);
+        if (!shader.isCompiled()) {
+            Gdx.app.error(TAG, "Error during shader compilation: " + shader.getLog());
+            Gdx.app.error(TAG, "VertexShader used:");
+            Gdx.app.error(TAG, vertProgram);
+            Gdx.app.error(TAG, "FragmentShader used:");
+            Gdx.app.error(TAG, fragProgram);
+        } else {
+            Gdx.app.log(TAG, "Shader '" + fileName + "' loaded successfully");
+        }
+
         return shader;
     }
 }
