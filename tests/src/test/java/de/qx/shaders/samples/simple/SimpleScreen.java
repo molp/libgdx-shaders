@@ -1,4 +1,4 @@
-package de.qx.shaders.sample;
+package de.qx.shaders.samples.simple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -12,7 +12,7 @@ import de.qx.shaders.ShaderManager;
 /**
  * @author Michael "molp" Olp
  */
-public class SampleScreen implements Screen {
+public class SimpleScreen implements Screen {
     private AssetManager assetManager;
     private boolean assetsLoaded;
 
@@ -22,7 +22,7 @@ public class SampleScreen implements Screen {
 
     private TextureRegion region;
 
-    public SampleScreen() {
+    public SimpleScreen() {
         assetManager = new AssetManager();
 
         assetManager.load("img/lena.png", Texture.class);

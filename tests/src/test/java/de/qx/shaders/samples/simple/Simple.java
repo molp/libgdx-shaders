@@ -1,4 +1,4 @@
-package de.qx.shaders.sample;
+package de.qx.shaders.samples.simple;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
@@ -9,18 +9,13 @@ import de.qx.shaders.ShaderLoader;
 /**
  * @author Michael "molp" Olp
  */
-public class Sample extends Game {
+public class Simple extends Game {
 
     @Override
     public void create() {
         final LocalFileHandleResolver localFileHandleResolver = new LocalFileHandleResolver();
         final AssetManager assetManager = new AssetManager(localFileHandleResolver);
-
-        assetManager.setLoader(ShaderProgram.class, new ShaderLoader(localFileHandleResolver));
-
-        assetManager.load("basic.vert+basic.frag", ShaderProgram.class);
-
-        setScreen(new SampleScreen());
+        setScreen(new SimpleScreen());
     }
 
     @Override
