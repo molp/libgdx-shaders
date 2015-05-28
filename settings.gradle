@@ -1,1 +1,3 @@
 include 'shaders', 'tests'
+
+project(":shaders").name = "libgdx-shaders"
