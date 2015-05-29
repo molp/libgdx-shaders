@@ -5,7 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 /**
  * @author Michael "molp" Olp
  */
-public class TestApplication implements ApplicationListener {
+class TestApplication implements ApplicationListener {
     @Override
     public void create() {
 

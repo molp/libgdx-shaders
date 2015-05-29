@@ -14,7 +14,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="shaders" exported="" />
     <orderEntry type="library" exported="" name="Gradle: com.badlogicgames.gdx:gdx-backend-lwjgl:1.6.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.badlogicgames.gdx:gdx-platform:1.6.1:natives-desktop" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.badlogicgames.gdx:gdx:1.6.1" level="project" />
@@ -34,5 +33,6 @@
     <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
     <orderEntry type="library" exported="" name="Gradle: com.badlogicgames.gdx:gdx-backend-headless:1.6.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.mockito:mockito-all:1.9.5" level="project" />
+    <orderEntry type="module" module-name="libgdx-shaders-libgdx-shaders" exported="" />
   </component>
 </module>
