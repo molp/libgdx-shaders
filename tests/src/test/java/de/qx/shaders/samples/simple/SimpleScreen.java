@@ -50,7 +50,7 @@ public class SimpleScreen implements Screen {
             batch.setShader(shaderManager.getCurrentShader());
 
             shaderManager.setUniformf("u_blackWhite", 0.75f);
-            shaderManager.setUniformMatrix("u_worldView", batch.getProjectionMatrix());
+            shaderManager.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
             batch.draw(region, 0f, 0f);
 
             batch.end();

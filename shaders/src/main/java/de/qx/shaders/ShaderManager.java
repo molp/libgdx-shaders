@@ -152,7 +152,7 @@ public class ShaderManager {
             throw new GdxRuntimeException("A framebuffer with the name '" + frameBufferName + "' could not be found");
         }
         frameBuffer.getColorBufferTexture().bind(0);
-        currentShader.setUniformMatrix("u_worldView", screenCamera.combined);
+        currentShader.setUniformMatrix("u_projTrans", screenCamera.combined);
         currentShader.setUniformi("u_texture", 0);
         target.render(currentShader, GL20.GL_TRIANGLES);
     }

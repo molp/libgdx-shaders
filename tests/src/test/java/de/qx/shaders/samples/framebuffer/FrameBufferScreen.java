@@ -53,7 +53,7 @@ public class FrameBufferScreen implements Screen {
             {
                 shaderManager.begin("black_and_white");
                 shaderManager.setUniformf("u_blackWhite", 0.75f);
-                shaderManager.setUniformMatrix("u_worldView", batch.getProjectionMatrix());
+                shaderManager.setUniformMatrix("u_projTrans", batch.getProjectionMatrix());
 
                 batch.setShader(shaderManager.getCurrentShader());
                 batch.begin();
