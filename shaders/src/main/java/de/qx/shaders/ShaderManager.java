@@ -126,8 +126,17 @@ public class ShaderManager {
         frameBuffer.begin();
         activeFrameBuffers.push(frameBuffer);
 
+        initInitialFrameBufferState(frameBuffer);
+    }
+
+    /**
+     * Sets the initial state when a FrameBuffer starts. Override to set your own state.
+     *
+     * @param frameBuffer the FrameBuffer for which the state is initialized
+     */
+    protected void initInitialFrameBufferState(FrameBuffer frameBuffer) {
         Gdx.graphics.getGL20().glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-        Gdx.graphics.getGL20().glClearColor(0f, 0f, 1f, 0f);
+        Gdx.graphics.getGL20().glClearColor(1f, 1f, 1f, 0f);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
