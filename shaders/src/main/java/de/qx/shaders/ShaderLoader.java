@@ -46,18 +46,38 @@ public class ShaderLoader extends AsynchronousAssetLoader<ShaderProgram, ShaderP
 
     @Override
     public ShaderProgram loadSync(AssetManager manager, String fileName, FileHandle file, ShaderParameter parameter) {
-        ShaderProgram.pedantic = false;
-        ShaderProgram shader = new ShaderProgram(vertProgram, fragProgram);
+        ShaderProgram.pedantic = true;
+        String vertexProgram = vertProgram;
+        String fragmentProgram = prependPrecision(fragProgram);
+        ShaderProgram shader = new ShaderProgram(vertexProgram, fragmentProgram);
         if (!shader.isCompiled()) {
             Gdx.app.error(TAG, "Error during shader compilation: " + shader.getLog());
             Gdx.app.error(TAG, "VertexShader used:");
-            Gdx.app.error(TAG, vertProgram);
+            Gdx.app.error(TAG, vertexProgram);
             Gdx.app.error(TAG, "FragmentShader used:");
-            Gdx.app.error(TAG, fragProgram);
+            Gdx.app.error(TAG, fragmentProgram);
         } else {
             Gdx.app.log(TAG, "Shader '" + fileName + "' loaded successfully");
         }
 
         return shader;
+    }
+
+    /**
+     * Ads precision definitions for the fragment program
+     *
+     * @param program to add the definition to
+     * @return the combined String
+     */
+    protected String prependPrecision(String program) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("#ifdef GL_ES\n")
+                .append("#define LOWP lowp\n")
+                .append("precision mediump float;\n")
+                .append("#else\n")
+                .append("#define LOWP \n")
+                .append("#endif\n")
+                .append(program);
+        return builder.toString();
     }
 }

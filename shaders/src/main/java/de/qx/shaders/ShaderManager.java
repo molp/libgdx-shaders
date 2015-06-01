@@ -14,6 +14,15 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.util.Stack;
 
 /**
+ * ShaderManager manages the loading, handling and disposing of ShaderPrograms.
+ * <p/>
+ * To load a shader use
+ * <code>
+ * shaderManager.loadShader("default", "default.vert", "default.frag");
+ * </code>
+ * <p/>
+ * and let the AssetLoader do the rest.
+ * <p/>
  * Created by michi on 27.05.2015.
  */
 public class ShaderManager {
@@ -22,20 +31,21 @@ public class ShaderManager {
 
     private final ArrayMap<String, ShaderProgram> shaders;
     private final ArrayMap<String, String> shaderPaths;
-    private ShaderProgram currentShader;
-
     private final ArrayMap<String, FrameBuffer> frameBuffers;
     private final Stack<FrameBuffer> activeFrameBuffers;
-
     private final Camera screenCamera;
     private final Mesh screenMesh;
+    private ShaderProgram currentShader;
     private int currentTextureId;
 
     public ShaderManager(AssetManager assetManager) {
+        this(assetManager, new ShaderLoader(new LocalFileHandleResolver()));
+    }
+
+    public ShaderManager(AssetManager assetManager, ShaderLoader shaderLoader) {
         this.assetManager = assetManager;
 
-        final LocalFileHandleResolver localFileHandleResolver = new LocalFileHandleResolver();
-        assetManager.setLoader(ShaderProgram.class, new ShaderLoader(localFileHandleResolver));
+        assetManager.setLoader(ShaderProgram.class, shaderLoader);
 
         shaders = new ArrayMap<>();
         shaderPaths = new ArrayMap<>();
@@ -99,11 +109,15 @@ public class ShaderManager {
         createFrameBuffer(frameBufferName, Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    private void createFrameBuffer(String frameBufferName, Pixmap.Format format, int width, int height) {
+    public void createFrameBuffer(String frameBufferName, int width, int height) {
+        createFrameBuffer(frameBufferName, Pixmap.Format.RGBA8888, width, height);
+    }
+
+    public void createFrameBuffer(String frameBufferName, Pixmap.Format format, int width, int height) {
         if (frameBuffers.containsKey(frameBufferName)) {
             throw new IllegalArgumentException("A framebuffer with the name '" + frameBufferName + "' already exists");
         }
-        FrameBuffer frameBuffer = new FrameBuffer(format, width, height, true);
+        FrameBuffer frameBuffer = new FrameBuffer(format, width, height, false, false);
         frameBuffers.put(frameBufferName, frameBuffer);
     }
 
@@ -113,7 +127,7 @@ public class ShaderManager {
         activeFrameBuffers.push(frameBuffer);
 
         Gdx.graphics.getGL20().glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-        Gdx.graphics.getGL20().glClearColor(1f, 1f, 1f, 0f);
+        Gdx.graphics.getGL20().glClearColor(0f, 0f, 1f, 0f);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
@@ -157,10 +171,21 @@ public class ShaderManager {
         target.render(currentShader, GL20.GL_TRIANGLES);
     }
 
+    /**
+     * Return the FrameBuffer with the given name
+     *
+     * @param frameBufferName Name of the FrameBuffer to return
+     * @return a FrameBuffer or <b>null</b> if there is no such FrameBuffer
+     */
     public FrameBuffer getFrameBuffer(String frameBufferName) {
         return frameBuffers.get(frameBufferName);
     }
 
+    /**
+     * Returns the currently active shader.
+     *
+     * @return a valid ShaderProgram or <b>null</b>
+     */
     public ShaderProgram getCurrentShader() {
         return currentShader;
     }
@@ -196,6 +221,9 @@ public class ShaderManager {
         currentShader.setUniformi(uniformName, textureId);
     }
 
+    /**
+     * ShaderManager needs to be disposed if not used anymore.
+     */
     public void dispose() {
         for (String path : shaderPaths.values()) {
             assetManager.unload(path);
