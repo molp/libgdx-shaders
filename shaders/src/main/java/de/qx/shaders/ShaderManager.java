@@ -15,14 +15,14 @@ import java.util.Stack;
 
 /**
  * ShaderManager manages the loading, handling and disposing of ShaderPrograms.
- * <p/>
+ * <p>
  * To load a shader use
  * <code>
  * shaderManager.loadShader("default", "default.vert", "default.frag");
  * </code>
- * <p/>
+ * <p>
  * and let the AssetLoader do the rest.
- * <p/>
+ * <p>
  * Created by michi on 27.05.2015.
  */
 public class ShaderManager {
@@ -105,14 +105,34 @@ public class ShaderManager {
         currentShader = null;
     }
 
+    /**
+     * Creates a new FrameBuffer with the format RGBA8888 and <code>Gdx.graphics.getWidth()</code> and <code>Gdx.graphics.getHeight()</code>
+     *
+     * @param frameBufferName name of the new FrameBuffer
+     */
     public void createFrameBuffer(String frameBufferName) {
         createFrameBuffer(frameBufferName, Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
+    /**
+     * Creates a new FrameBuffer with the format RGBA8888 and the given width and height
+     *
+     * @param frameBufferName name of the new FrameBuffer
+     * @param width           of the FrameBuffer
+     * @param height          of the FrameBuffer
+     */
     public void createFrameBuffer(String frameBufferName, int width, int height) {
         createFrameBuffer(frameBufferName, Pixmap.Format.RGBA8888, width, height);
     }
 
+    /**
+     * Creates a new FrameBuffer with the format RGBA8888 and the given width and height
+     *
+     * @param frameBufferName name of the new FrameBuffer
+     * @param format          of the FrameBuffer, see Pixmap.Format for valid values
+     * @param width           of the FrameBuffer
+     * @param height          of the FrameBuffer
+     */
     public void createFrameBuffer(String frameBufferName, Pixmap.Format format, int width, int height) {
         if (frameBuffers.containsKey(frameBufferName)) {
             throw new IllegalArgumentException("A framebuffer with the name '" + frameBufferName + "' already exists");
@@ -121,11 +141,29 @@ public class ShaderManager {
         frameBuffers.put(frameBufferName, frameBuffer);
     }
 
+    /**
+     * Start rendering into the given FrameBuffer
+     *
+     * @param frameBufferName name of the FrameBuffer
+     */
     public void beginFrameBuffer(String frameBufferName) {
+        beginFrameBuffer(frameBufferName, 0f, 0f, 0f, 0f);
+    }
+
+    /**
+     * Start rendering into the given FrameBuffer with the specified clear color.
+     *
+     * @param frameBufferName name of the FrameBuffer
+     */
+    public void beginFrameBuffer(String frameBufferName, float clearColorRed, float clearColorGreen, float clearColorBlue, float clearColorAlpha) {
+        if (!frameBuffers.containsKey(frameBufferName)) {
+            throw new IllegalArgumentException("A framebuffer with the name '" + frameBufferName + "' has not been created");
+        }
         final FrameBuffer frameBuffer = frameBuffers.get(frameBufferName);
         frameBuffer.begin();
         activeFrameBuffers.push(frameBuffer);
 
+        Gdx.graphics.getGL20().glClearColor(clearColorRed, clearColorGreen, clearColorBlue, clearColorAlpha);
         initInitialFrameBufferState(frameBuffer);
     }
 
@@ -136,13 +174,15 @@ public class ShaderManager {
      */
     protected void initInitialFrameBufferState(FrameBuffer frameBuffer) {
         Gdx.graphics.getGL20().glViewport(0, 0, frameBuffer.getWidth(), frameBuffer.getHeight());
-        Gdx.graphics.getGL20().glClearColor(1f, 1f, 1f, 0f);
         Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_TEXTURE_2D);
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         Gdx.graphics.getGL20().glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    /**
+     * Stops rendering to the current FrameBuffer
+     */
     public void endFrameBuffer() {
         if (activeFrameBuffers.empty()) {
             throw new GdxRuntimeException("There is no active frame buffer that can be ended");
